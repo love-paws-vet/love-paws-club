@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Love Paws Club</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="manifest" href="site.webmanifest">
+</head>
+<body>
+    <header>
+        <h1>Love Paws Club - Interno</h1>
+        <div id="auth-container">
+            <div id="login-view">
+                <form id="login-form">
+                    <input type="email" id="login-email" placeholder="Email" required>
+                    <input type="password" id="login-password" placeholder="Contraseña" required>
+                    <button type="submit">Ingresar</button>
+                </form>
+            </div>
+            <div id="user-view" class="hidden">
+                <span id="user-email"></span>
+                <button id="logout-button">Cerrar sesión</button>
+            </div>
+        </div>
+    </header>
+
+    <main id="app-container" class="hidden">
+        <section id="client-section">
+            <h2>Administración de Clientes</h2>
+            <form id="client-search-form">
+                <input type="tel" id="client-search-phone" placeholder="Teléfono del cliente" pattern="[0-9\-\+\(\)\s]+" maxLength="10" minLength="10" autocomplete="off"required>
+                <button type="submit">Buscar Cliente</button>
+                <button type="button" id="reset-client-search" onclick="resetToInitialState()">Reiniciar Búsqueda</button>
+            </form>            
+            
+            <div id="client-info" class="hidden">
+                <h3 id="client-name-display"></h3>
+                <div id="add-pet-form-container">
+                    <h4>Añadir una nueva mascota</h4>
+                    <form id="add-pet-form">
+                        <input type="text" id="pet-name" placeholder="Nombre de la mascota" required>                     
+                        <select id="pet-breed" required>
+                            <option value="">Seleccionar Especie</option>
+                            <option value="Perro">Perro</option>
+                            <option value="Gato">Gato</option>
+                        </select>
+
+                        <button type="submit">Añadir mascota</button>
+                    </form>
+                </div>
+            </div>
+            <div id="new-client-form-container" class="hidden">
+                <h4>Cliente No Encontrado - Añadir Nuevo Cliente</h4>
+                <form id="add-client-form">
+                    <input type="text" id="new-client-name" placeholder="Nombre Apellido" required>
+                    <input type="tel" id="new-client-phone" placeholder="Teléfono" pattern="[0-9\-\+\(\)\s]+" maxLength="10" minLength="10" required>
+                    <button type="submit">Añadir Cliente</button>
+                </form>
+            </div>
+        </section>
+
+        <section id="pet-section" class="hidden">
+            <h2>Mascotas</h2>
+            <div id="pets-list"></div>
+        </section>
+
+        <section id="service-section" class="hidden">
+            <h2 id="selected-pet-name">Servicios</h2>
+            <p>Services Totales: <span id="service-count">0</span></p>
+            <form id="add-service-form">
+                <select id="service-name" required>
+                            <option value="">Seleccionar Servicio</option>
+                            <option value="Baño">Baño</option>
+                            <option value="Estética">Estética</option>
+                        </select>
+                <button type="submit">Añadir Servicio</button>
+            </form>
+            <ul id="services-list"></ul>
+        </section>
+    </main>
+
+    <div id="loading" class="hidden">Cargando...</div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+
+    <script src="app.js"></script>
+</body>
+</html>
