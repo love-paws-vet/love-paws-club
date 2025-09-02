@@ -21,9 +21,17 @@
                     <button type="submit">Ingresar</button>
                 </form>
             </div>
-            <div id="user-view" class="hidden">
+            <div id="user-view" class="hidden" style="position:relative;">
                 <span id="user-email"></span>
-                <button id="logout-button">Cerrar sesión</button>
+                <button id="menu-toggle" aria-label="Abrir menú">
+                    <span style="font-size:2em;">&#9776;</span>
+                </button>
+                <nav id="sandwich-menu" class="hidden">
+                    <ul>
+                        <li><button id="punch-button">Registro de turno</button></li>
+                        <li><button id="logout-button">Cerrar sesión</button></li>
+                    </ul>
+                </nav>
             </div>
         </div>
     </header>
@@ -80,6 +88,26 @@
                 <button type="submit">Añadir Servicio</button>
             </form>
             <ul id="services-list"></ul>
+        </section>
+
+        <section id="punch-section" class="hidden">
+            <h2>Registro de turno</h2>
+            <p>Fecha actual: <span id="punch-local-time">N/A</span></p>
+
+            <form id="punch-form">
+                <input type="hidden" name="punch-timestamp" id="punch-timestamp">
+                <input type="hidden" name="punch-location-lat" id="punch-location-lat">
+                <input type="hidden" name="punch-location-long" id="punch-location-lon">
+                <input type="hidden" name="punch-user" id="punch-user">
+                <select name="punch-type" id="punch-type" required>
+                    <option value="">Seleccionar tipo</option>
+                    <option value="Entrada">Entrada</option>
+                    <option value="Salida">Salida</option>
+                </select>
+                <button type="button" id="punch-action-button">Marcar Entrada/Salida</button>
+                <button type="button" id="punch-cancel">Cancelar</button>
+            </form>
+
         </section>
     </main>
 

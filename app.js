@@ -26,6 +26,7 @@ const userEmailDisplay = document.getElementById('user-email');
 const loginForm = document.getElementById('login-form');
 const logoutButton = document.getElementById('logout-button');
 
+const clientSection = document.getElementById('client-section');
 const clientSearchForm = document.getElementById('client-search-form');
 const clientSearchPhoneInput = document.getElementById('client-search-phone');
 const clientInfoDiv = document.getElementById('client-info');
@@ -48,6 +49,19 @@ const serviceCountSpan = document.getElementById('service-count');
 const addServiceForm = document.getElementById('add-service-form');
 const serviceNameInput = document.getElementById('service-name');
 const servicesListUl = document.getElementById('services-list');
+
+const menuToggle = document.getElementById('menu-toggle');
+const sandwichMenu = document.getElementById('sandwich-menu');
+
+const punchButton = document.getElementById('punch-button');
+const punchSection = document.getElementById('punch-section');
+const punchCancelButton = document.getElementById('punch-cancel');
+
+const punchLocationLatInput = document.getElementById('punch-location-lat');
+const punchLocationLonInput = document.getElementById('punch-location-lon');
+const punchTimestampInput = document.getElementById('punch-timestamp');
+const punchUserInput = document.getElementById('punch-user');
+const punchForm = document.getElementById('punch-form');
 
 // --- AUTHENTICATION ---
 auth.onAuthStateChanged(user => {
@@ -91,7 +105,7 @@ clientSearchForm.addEventListener('submit', async (e) => {
 
     const clientsRef = db.collection('clients');
     const q = clientsRef.where('phone', '==', phoneNumber);
-    
+
     try {
         const querySnapshot = await q.get();
         if (querySnapshot.empty) {
@@ -145,7 +159,7 @@ addPetForm.addEventListener('submit', async (e) => {
 
     const petName = petNameInput.value.trim();
     const petBreed = petBreedInput.value.trim();
-    
+
     if (!petName || !petBreed) return;
 
     try {
@@ -188,7 +202,7 @@ async function displayPets(clientId) {
 
 function handlePetSelection(petId, petName) {
     currentPetId = petId;
-    
+
     // Update UI for selected pet
     document.querySelectorAll('.pet-item').forEach(el => el.classList.remove('selected'));
     document.querySelector(`[data-pet-id="${petId}"]`).classList.add('selected');
@@ -264,5 +278,98 @@ function resetToInitialState() {
     addClientForm.reset();
     addPetForm.reset();
     addServiceForm.reset();
+    punchForm.reset();
 }
+
+menuToggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    sandwichMenu.classList.toggle('hidden');
+});
+
+document.addEventListener('click', (e) => {
+    if (!menuToggle.contains(e.target) && !sandwichMenu.contains(e.target)) {
+        sandwichMenu.classList.add('hidden');
+    }
+});
+
+// --- PUNCH LOGIC ---
+punchCancelButton.addEventListener('click', () => {
+    punchSection.classList.add('hidden');
+    clientSection.classList.remove('hidden');
+    if (currentClientId) {
+        clientInfoDiv.classList.remove('hidden');
+    }
+    if (currentClientId) {
+        petSection.classList.remove('hidden');
+    }
+    if (currentPetId) {
+        serviceSection.classList.remove('hidden');
+    }
+    appContainer.scrollIntoView({ behavior: 'smooth' });
+});
+
+punchButton.addEventListener('click', () => {
+    clientSection.classList.add('hidden');
+    clientInfoDiv.classList.add('hidden');
+    newClientFormContainer.classList.add('hidden');
+    petSection.classList.add('hidden');
+    serviceSection.classList.add('hidden');
+    punchSection.classList.remove('hidden');
+    punchSection.scrollIntoView({ behavior: 'smooth' });
+    getUserLocation();
+});
+
+function getUserLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            function (position) {
+                const latitude = position.coords.latitude;
+                const longitude = position.coords.longitude;
+                console.log("Latitude:", latitude);
+                console.log("Longitude:", longitude);
+                // You can return or use the coordinates here
+
+                punchLocationLatInput.value = latitude;
+                punchLocationLonInput.value = longitude;
+
+                const user = auth.currentUser;
+                punchUserInput.value = user ? user.email : 'unknown';
+            },
+            function (error) {
+                console.error("Error getting location:", error.message);
+            }
+        );
+    } else {
+        console.error("Geolocation is not supported by this browser.");
+    }
+}
+
+let myInterval;
+
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            // Item is visible, start the interval
+            startInterval();
+        } else {
+            // Item is not visible, clear the interval
+            clearInterval(myInterval);
+            myInterval = null;
+        }
+    });
+});
+
+
+function startInterval() {
+    if (!myInterval) { // Prevent multiple intervals from starting
+        myInterval = setInterval(() => {
+            const now = new Date();
+            const formattedTime = now.toLocaleString(); // Adjust format as needed
+            document.getElementById('punch-local-time').textContent = formattedTime;
+            punchTimestampInput.value = now.toISOString();
+        }, 1000); // Execute every 1 second
+    }
+}
+
+observer.observe(punchSection);
 
